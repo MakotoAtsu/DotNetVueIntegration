@@ -25,11 +25,14 @@ namespace ViteHosted
         /// NOTE: (this will create devcert.pfx and vite.config.js in your Vue Application on first run)
         /// </summary>
         /// <param name="spa"></param>
-        public static void UseViteDevelopmentServer(this ISpaBuilder spa)
+        public static void UseViteDevelopmentServer(this ISpaBuilder spa, int? port = null)
         {
             // Default HostingPort
             if (spa.Options.DevServerPort == 0)
                 spa.Options.DevServerPort = 3000;
+
+            if (port.HasValue)
+                spa.Options.DevServerPort = port.Value;
 
             if (string.IsNullOrWhiteSpace(spa.Options.SourcePath))
                 throw new ArgumentNullException("ISpaBuilder.Options.SourcePath", "Must specific Spa Client App path");
@@ -90,10 +93,11 @@ namespace ViteHosted
                 }
 
                 // launch vue.js development server
+                var runningPort = port.HasValue ? $" -- --port {port.Value}" : string.Empty;
                 var processInfo = new ProcessStartInfo
                 {
                     FileName = isWindows ? "cmd" : "npm",
-                    Arguments = $"{(isWindows ? "/c npm " : "")}run dev",
+                    Arguments = $"{(isWindows ? "/c npm " : "")}run dev{runningPort}",
                     WorkingDirectory = spa.Options.SourcePath,
                     RedirectStandardError = true,
                     RedirectStandardInput = true,
