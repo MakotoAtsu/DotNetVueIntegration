@@ -117,7 +117,7 @@ namespace ViteHosted
                             if (!String.IsNullOrEmpty(line))
                             {
                                 logger.LogInformation(line);
-                                if (!tcs.Task.IsCompleted && line.Contains(DoneMessage))
+                                if (!tcs.Task.IsCompleted && line.Contains(DoneMessage, StringComparison.OrdinalIgnoreCase))
                                 {
                                     tcs.SetResult(1);
                                 }
